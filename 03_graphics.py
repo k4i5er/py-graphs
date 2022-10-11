@@ -1,4 +1,3 @@
-from __future__ import division
 from tkinter import Tk, Canvas, StringVar
 from tkinter.ttk import Frame, Combobox, Label, Entry
 from math import sqrt
@@ -51,20 +50,26 @@ class Model():
         params = self.plane.get_params()
         canvas = self.plane.get_canvas()
         divisions = self.plane.get_divisions()
-        x_coord = params[0] * divisions[0]
-        y_coord = params[1] * divisions[1]
         print('>>>>>', canvas)
         # Para graficar el modelo lineal
         if self.model == 'Lineal':
+            x_coord = params[0] * divisions[1]
+            y_coord = params[1] * divisions[1]
             for i in range(-self.dom_x, self.dom_x):
                 origin = self.plane.get_origin()
                 canvas.create_line(
                     i*divisions[0] + origin[0], origin[1]-(x_coord*i+y_coord), (i+1)*divisions[0]+origin[0], origin[1]-(x_coord*(i+1)+y_coord))
         elif self.model == 'Cuadrático':
-            for i in range(-self.dom_x, self.dom_x):
+            a = params[0]  * divisions[1]
+            b = params[1]  * divisions[1]
+            c = params[2]  * divisions[1]
+            # for i in range(-self.dom_x, self.dom_x):
+            i = -self.dom_x
+            while(i <= self.dom_x):
                 origin = self.plane.get_origin()
                 canvas.create_line(
-                    i*divisions[0] + origin[0], origin[1]-(x_coord*i+y_coord), (i+1)*divisions[0]+origin[0], origin[1]-(x_coord*(i+1)+y_coord))
+                    i*divisions[0] + origin[0], origin[1]-(a*i**2+b*i+c), (i+1)*divisions[0]+origin[0], origin[1]-(a*(i+1)**2+b*(i+1)+c))
+                i += 0.1
 
             # canvas.create_line(0, 0, 300, 600)
             # print('Graficando... (próximamente)')
@@ -107,6 +112,8 @@ class Draw(Tk):
             self.cmb_eq_list.get()))
         self.frm_models.pack(ipady=10)
         self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)
+        self.cmb_eq_list.bind('<<ComboboxSelected>>',
+                              lambda e: self.model_graph(self.cmb_eq_list.get()))
 
         # Props
         self.width = self.canvas.winfo_width()  # self.winfo_width()
@@ -183,6 +190,14 @@ class Draw(Tk):
         #############################################################
         if self.cmb_eq_list.selection_get() == 'Lineal':
             return (float(self.param1.get()), float(self.param2.get()))
+        elif self.cmb_eq_list.selection_get() == 'Cuadrático':
+            self.param1 = StringVar()
+            self.param2 = StringVar()
+            self.param3 = StringVar()
+            self.param1.set('5')
+            self.param2.set('0')
+            self.param3.set('0')
+            return (float(self.param1.get()), float(self.param2.get()), float(self.param3.get()))
 
     def model_graph(self, model_name):
         # params = self.get_params()
