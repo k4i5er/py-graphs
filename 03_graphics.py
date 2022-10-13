@@ -50,6 +50,9 @@ class Model():
         params = self.plane.get_params()
         canvas = self.plane.get_canvas()
         divisions = self.plane.get_divisions()
+        origin = self.plane.get_origin()
+        print(origin)
+        print(361//divisions[0])
         print('>>>>>', canvas)
         # Para graficar el modelo lineal
         if self.model == 'Lineal':
@@ -63,13 +66,16 @@ class Model():
             a = params[0]  * divisions[1]
             b = params[1]  * divisions[1]
             c = params[2]  * divisions[1]
-            # for i in range(-self.dom_x, self.dom_x):
             i = -self.dom_x
-            while(i <= self.dom_x):
-                origin = self.plane.get_origin()
-                canvas.create_line(
-                    i*divisions[0] + origin[0], origin[1]-(a*i**2+b*i+c), (i+1)*divisions[0]+origin[0], origin[1]-(a*(i+1)**2+b*(i+1)+c))
-                i += 0.1
+            while i <= self.dom_x:
+                x_coord = i*divisions[0]
+                x_coord2 = (i+1)*divisions[0]
+                k = x_coord2 - x_coord
+                for j in range(k):
+                    canvas.create_line(
+                        j + x_coord + origin[0], origin[1]-(a*(i+j/k)**2+b*(i+j/k)+c), (j+1) + x_coord + origin[0], origin[1]-(a*(i + (j+1)/k)**2+b*(i + (j+1)/k)+c))
+                i += 1
+                
 
             # canvas.create_line(0, 0, 300, 600)
             # print('Graficando... (próximamente)')
@@ -194,7 +200,7 @@ class Draw(Tk):
             self.param1 = StringVar()
             self.param2 = StringVar()
             self.param3 = StringVar()
-            self.param1.set('5')
+            self.param1.set('-1')
             self.param2.set('0')
             self.param3.set('0')
             return (float(self.param1.get()), float(self.param2.get()), float(self.param3.get()))
