@@ -98,30 +98,14 @@ class Draw(Tk):
         # Widgets
         self.frm_eq = Frame(self, relief='sunken')
         self.frm_eq_list = Frame(self.frm_eq)
-        self.cmb_eq_list = Combobox(self.frm_eq_list)
+        self.cmb_eq_list = Combobox(self.frm_eq_list, state='readonly')
         self.cmb_eq_list.pack()
         self.frm_eq_list.pack(ipady=10)
-        self.frm_models = Frame(self.frm_eq)
-        Label(self.frm_models, text='y =').pack(side='left')
-        self.param1 = StringVar()
-        self.entry_param1 = Entry(
-            self.frm_models, textvariable=self.param1, width=4)
-        self.entry_param1.pack(side='left')
-        self.entry_param1.bind(
-            '<Return>', lambda e: self.entry_param2.focus_set())
-        Label(self.frm_models, text=' x + ').pack(side='left')
-        self.param2 = StringVar()
-        self.entry_param2 = Entry(
-            self.frm_models, textvariable=self.param2, width=4)
-        self.entry_param2.pack(side='left')
-        self.entry_param2.bind('<Return>', lambda e: self.model_graph(
-            self.cmb_eq_list.get()))
-        self.frm_models.pack(ipady=10)
-        self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)
-        self.cmb_eq_list.bind('<<ComboboxSelected>>',
-                              lambda e: self.model_graph(self.cmb_eq_list.get()))
+        self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)     
+        self.cmb_eq_list.bind('<<ComboboxSelected>>', lambda event: self.get_graf(self.cmb_eq_list))
 
         # Props
+        
         self.width = self.canvas.winfo_width()  # self.winfo_width()
         self.height = self.canvas.winfo_height()  # self.winfo_height()
         self.dom_x = 10
@@ -204,7 +188,37 @@ class Draw(Tk):
             self.param2.set('0')
             self.param3.set('0')
             return (float(self.param1.get()), float(self.param2.get()), float(self.param3.get()))
+   
+    def get_graf(self, opc):
+        self.frm_models = Frame(self.frm_eq)
+        self.frm_models.pack(ipady= 10)
 
+        self.label = Label(self.frm_models)
+        self.label.pack(side=LEFT)
+
+        self.param1= StringVar()
+        self.entry_param1 = Entry(self.frm_models, textvariable=self.param1, width=4)
+        self.entry_param1.pack(side=LEFT)
+        self.entry_param1.bind('<Return>', lambda e: self.entry_param2.focus_set())
+
+        self.label_1 = Label(self.frm_models)
+        self.label_1.pack(side=LEFT)
+
+        self.param2= StringVar()
+        self.entry_param2 = Entry(self.frm_models, textvariable=self.param2, width=4)
+        self.entry_param2.pack(side=LEFT)  
+        self.entry_param2.bind('<Return>', lambda e: self.model_graph(self.cmb_eq_list.get() ) )
+
+        self.label_2 = Label(self.frm_models)
+        self.label_2.pack(side=LEFT)
+
+        if opc.get() == 'Lineal':
+            self.label.config(text='y =') 
+            self.label_1.config(text='x + ') 
+
+        if opc.get() == 'Cuadrático':
+            pass
+       
     def model_graph(self, model_name):
         # params = self.get_params()
         # Creamos una instancia de la clase Model
