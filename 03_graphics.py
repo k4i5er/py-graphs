@@ -1,4 +1,4 @@
-from tkinter import LEFT, Tk, Canvas, StringVar
+from tkinter import Tk, Canvas, StringVar
 from tkinter.ttk import Frame, Combobox, Label, Entry
 from math import sqrt
 
@@ -101,9 +101,9 @@ class Draw(Tk):
         self.cmb_eq_list = Combobox(self.frm_eq_list, state='readonly')
         self.cmb_eq_list.pack()
         self.frm_eq_list.pack(ipady=10)
-        self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)
-        
+        self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)     
         self.cmb_eq_list.bind('<<ComboboxSelected>>', lambda event: self.get_graf(self.cmb_eq_list))
+
         # Props
         
         self.width = self.canvas.winfo_width()  # self.winfo_width()
@@ -219,7 +219,6 @@ class Draw(Tk):
         if opc.get() == 'Cuadrático':
             pass
        
-
     def model_graph(self, model_name):
         # params = self.get_params()
         # Creamos una instancia de la clase Model
