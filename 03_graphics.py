@@ -110,7 +110,6 @@ class Draw(Tk):
         self.height = self.canvas.winfo_height()  # self.winfo_height()
         self.dom_x = 10
         self.dom_y = 14
-        self.divisions = (10, 10)
 
         # Se inicializa el plano
         self.update()
@@ -120,7 +119,9 @@ class Draw(Tk):
 
     def on_resize(self, e):
         self.width = self.winfo_width()  # e.width
-        self.height = self.winfo_height()  # e.height
+        self.height = self.winfo_height() # e.height
+    
+
         # Repintar el plano
         self.initialize()
 
@@ -160,17 +161,15 @@ class Draw(Tk):
     def get_origin(self):
         return (self.canvas.winfo_width()//2, self.canvas.winfo_height()//2)
 
-    def set_divisions(self, divisions):
-        origin = self.get_origin()
-        for i in range(origin[0], origin[0]*2, origin[0]//divisions[0]):
-            self.canvas.create_line(
-                i, origin[1]-5, i, origin[1]+5)
-            self.canvas.create_line(
-                (origin[0]*2)-i, origin[1]-5, (origin[0]*2)-i, origin[1]+5)
-        for i in range(origin[1], origin[1]*2, origin[1]//divisions[1]):
-            self.canvas.create_line(origin[0]-5, i, origin[0]+5, i)
-            self.canvas.create_line(
-                origin[0]-5, (origin[1]*2)-i, origin[0]+5, (origin[1]*2)-i)
+    def set_divisions(self):
+        self.x_inf = 6
+        self.x_sup = 7
+        self.y_inf = 8
+        self.y_sup = 9
+        eje_x = self.x_inf+self.x_sup
+        eje_y = self.y_inf+self.y_sup
+    
+        return
 
     def get_divisions(self):
         origin = self.get_origin()
@@ -194,23 +193,23 @@ class Draw(Tk):
         self.frm_models.pack(ipady= 10)
 
         self.label = Label(self.frm_models)
-        self.label.pack(side=LEFT)
+        self.label.pack(side='left')
 
         self.param1= StringVar()
         self.entry_param1 = Entry(self.frm_models, textvariable=self.param1, width=4)
-        self.entry_param1.pack(side=LEFT)
+        self.entry_param1.pack(side='left')
         self.entry_param1.bind('<Return>', lambda e: self.entry_param2.focus_set())
 
         self.label_1 = Label(self.frm_models)
-        self.label_1.pack(side=LEFT)
+        self.label_1.pack(side='left')
 
         self.param2= StringVar()
         self.entry_param2 = Entry(self.frm_models, textvariable=self.param2, width=4)
-        self.entry_param2.pack(side=LEFT)  
+        self.entry_param2.pack(side='left')  
         self.entry_param2.bind('<Return>', lambda e: self.model_graph(self.cmb_eq_list.get() ) )
 
         self.label_2 = Label(self.frm_models)
-        self.label_2.pack(side=LEFT)
+        self.label_2.pack(side='left')
 
         if opc.get() == 'Lineal':
             self.label.config(text='y =') 
