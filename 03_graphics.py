@@ -1,32 +1,13 @@
-from __future__ import division
+
 from tkinter import Tk, Canvas, StringVar
 from tkinter.ttk import Frame, Combobox, Label, Entry
 from math import sqrt
-
 
 class Punto():
     def __init__(self, canvas, x=0, y=0):
         self.x = x
         self.y = y
         self.canvas = canvas
-
-    def cuadrante(self):
-        if self.x > 0 and self.y > 0:
-            return 'Cuadrante positivo (Primer cuadrante)'
-        elif self.x < 0 and self.y > 0:
-            return 'Cuarto cuadrante'
-        elif self.x > 0 and self.y < 0:
-            return 'Segundo cuadrante'
-        elif self.x < 0 and self.y < 0:
-            return 'Tercer cuadrante'
-        elif self.x == 0 and self.y != 0:
-            return 'Punto sobre el eje vertical (y)'
-        elif self.y == 0 and self.x != 0:
-            return 'Punto sobre el eje horizontal (x)'
-        else:
-            return 'Punto en el origen'
-
-    # Encapsulamiento
 
     def get_coordenadas(self):
         return (self.x, self.y)
@@ -126,33 +107,15 @@ class Draw(Tk):
         self.height = self.winfo_height()  # e.height
         # Repintar el plano
         self.initialize()
+        self.set_divisions(self.width, self.height)
 
+        
     def initialize(self):
         self.canvas.delete('all')
-        origin = self.get_origin()
-        self.xscale = 0
-        self.yscale = 0
-        self.canvas.create_line(origin[0], 0, origin[0], origin[1]*2)  # Eje y
-        self.canvas.create_line(0, origin[1], origin[0]*2, origin[1])  # Eje x
-        self.canvas.create_line(0, origin[1], 10, origin[1]-5)
-        self.canvas.create_line(0, origin[1], 10, origin[1]+5)
-        self.canvas.create_line(
-            origin[0]*2, origin[1], origin[0]*2-10, origin[1]-5)
-        self.canvas.create_line(
-            origin[0]*2, origin[1], origin[0]*2-10, origin[1]+5)
+        param = self.get_divisions()
 
-        self.canvas.create_line(origin[0], 0, origin[0]-5, 10)
-
-        self.canvas.create_line(origin[0], 0, origin[0]+5, 10)
-
-        self.canvas.create_line(
-            origin[0], origin[1]*2, origin[0]-5, origin[1]*2-10)
-
-        self.canvas.create_line(
-            origin[0], origin[1]*2, origin[0]+5, origin[1]*2-10)
-
-        # self.set_divisions(5, 'y')
-        self.set_divisions(self.divisions)
+        # Dibujo del plani.
+        self.plane()
 
         self.cmb_eq_list['values'] = ['Lineal', 'Cuadrático', 'Cúbico',
                                       'Exponencial', 'Logístico', 'Logarítmico', 'Senoidal', 'Hiperbólico']
@@ -160,24 +123,52 @@ class Draw(Tk):
     def get_canvas(self):
         return self.canvas
 
-    def get_origin(self):
-        return (self.canvas.winfo_width()//2, self.canvas.winfo_height()//2)
+    def get_origin(self, division_x, param_x, division_y, param_y):
+        return (division_x*param_x, division_y*param_y)
 
-    def set_divisions(self, divisions):
-        origin = self.get_origin()
-        for i in range(origin[0], origin[0]*2, origin[0]//divisions[0]):
-            self.canvas.create_line(
-                i, origin[1]-5, i, origin[1]+5)
-            self.canvas.create_line(
-                (origin[0]*2)-i, origin[1]-5, (origin[0]*2)-i, origin[1]+5)
-        for i in range(origin[1], origin[1]*2, origin[1]//divisions[1]):
-            self.canvas.create_line(origin[0]-5, i, origin[0]+5, i)
-            self.canvas.create_line(
-                origin[0]-5, (origin[1]*2)-i, origin[0]+5, (origin[1]*2)-i)
+    def plane(self):
+        param = self.get_divisions()
+        divisions = self.parametros_xy()
+        print(divisions)
+        origin = self.get_origin(divisions[0], param[0], divisions[1], param[3])
+        self.canvas.create_line(0,origin[1],self.canvas.winfo_width(),origin[1])
+        self.canvas.create_line(origin[0],0,origin[0], self.canvas.winfo_height())
+        x2 = (param[0]+param[1])*divisions[0]
+        for i in range(divisions[0],x2,divisions[0]):
+            self.canvas.create_line(i,origin[1]-5,i,origin[1]+5)
+        y2= (param[2]+param[3])*divisions[1]
+        for i in range(divisions[1],y2,divisions[1]):
+            self.canvas.create_line(origin[0]-5,i,origin[0]+5,i)
+        
+        self.canvas.create_line(origin[0],self.height,origin[0]-20,self.height-20)
+        self.canvas.create_line(origin[0],self.height,origin[0]+20,self.height-20)
+
+        self.canvas.create_line(0,origin[1],20,origin[1]-20,)
+        self.canvas.create_line(0,origin[1],20,origin[1]+20)
+
+        self.canvas.create_line(origin[0],0,origin[0]+20,20)
+        self.canvas.create_line(origin[0],0,origin[0]-20,20)
+
+        self.canvas.create_line(self.width,origin[1],self.width-20,origin[1]-20)
+        self.canvas.create_line(self.width,origin[1],self.width-20,origin[1]+20)
+            
+    
+    
+    def parametros_xy(self):
+        param = self.get_divisions()
+        eje_x = param[0]+param[1]
+        self.division_x = self.canvas.winfo_width()//eje_x
+        eje_y = param[2]+param[3]
+        self.division_y = self.canvas.winfo_height()//eje_y
+        return (self.division_x, self.division_y)
 
     def get_divisions(self):
-        origin = self.get_origin()
-        return(origin[0]//self.divisions[0], origin[1]//self.divisions[1])
+            self.x_inf = 3+1
+            self.x_sup = 10+1
+            self.y_inf = 2+1
+            self.y_sup = 20+1
+            
+            return (self.x_inf, self.x_sup, self.y_inf, self.y_sup)
 
     def get_params(self):
         #############################################################
