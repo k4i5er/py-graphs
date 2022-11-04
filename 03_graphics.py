@@ -1,6 +1,7 @@
 from tkinter import Tk, Canvas, StringVar, IntVar
 from tkinter.ttk import Frame, Combobox, Label, Entry, Labelframe
 
+
 class Model():
     def __init__(self, model, dom_x, dom_y, plane):
         self.dom_x = dom_x
@@ -30,6 +31,7 @@ class Model():
             a = params[0]  * divisions_2[1]
             b = params[1]  * divisions_2[1]
             c = params[2]  * divisions_2[1]
+
             i = -self.dom_x
             while i <= self.dom_x:
                 x_coord = i*divisions_2[0]
@@ -39,7 +41,6 @@ class Model():
                     canvas.create_line(
                         j + x_coord + origin[0], origin[1]-(a*(i+j/k)**2+b*(i+j/k)+c), (j+1) + x_coord + origin[0], origin[1]-(a*(i + (j+1)/k)**2+b*(i + (j+1)/k)+c))
                 i += 1
-
 
 class Draw(Tk):
     def __init__(self):  # Constructor
@@ -64,10 +65,11 @@ class Draw(Tk):
         self.cmb_eq_list.pack()
         self.frm_eq_list.pack(ipady=10)
         self.frm_eq.pack(side='left', fill='both', expand=1, pady=10)
-        
-        self.cmb_eq_list.bind('<<ComboboxSelected>>', lambda event: self.get_graf(self.cmb_eq_list))
+        self.cmb_eq_list.bind('<<ComboboxSelected>>',
+                              lambda event: self.get_graf(self.cmb_eq_list))
+
         # Props
-        
+
         self.width = self.canvas.winfo_width()  # self.winfo_width()
         self.height = self.canvas.winfo_height()  # self.winfo_height()
         self.dom_x = 10
@@ -170,12 +172,12 @@ class Draw(Tk):
             return (float(self.param1.get()), float(self.param2.get()))
         elif self.cmb_eq_list.selection_get() == 'Cuadrático':
             return (float(self.param1.get()), float(self.param2.get()), float(self.param3.get()))
-   
+
     def get_graf(self, opc):
         
 
         self.frm_models = Frame(self.frm_eq)
-        self.frm_models.pack(ipady= 10)
+        self.frm_models.pack(ipady=10)
 
         # Labels
         self.lbl = Label(self.frm_models)
@@ -351,3 +353,4 @@ class Draw(Tk):
 if __name__ == '__main__':
      app = Draw()  # Instance for create a window
      app.mainloop()
+
